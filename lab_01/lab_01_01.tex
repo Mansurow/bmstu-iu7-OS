@@ -275,6 +275,14 @@
 020A:07B3  C4					db	0C4h
 020A:07B4  C4 0E 93E9			les	cx,dword ptr ds:[93E9h]	; (0000:93E9=3C0Ch) Load 32 bit ptr
 020A:07B8  FE					db	0FEh
+;; ...
+020A:064C 1E   					push ds
+020A:064D 50					push ax
+;; ...
+020A:0689 58 					pop ax
+020A:068A 1F  					pop ds
+;; Возврат из прерывания
+020A:06AC CF					iret     ; Interrrupt return						
 \end{lstlisting}
 \clearpage
 \subsection{Листинг процедуры sub\_6}
