@@ -1,0 +1,342 @@
+\documentclass[a4paper,14pt]{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{caption}
+\usepackage{misccorr}
+\usepackage[noadjust]{cite}
+\usepackage{cmap}
+\usepackage[utf8x]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[english, russian]{babel}
+\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{verbatim}
+\usepackage{makeidx}
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{bm}
+\usepackage{esint}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{courier}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{ucs}
+\usepackage{titlesec}
+
+\lstdefinestyle{asm}{
+	language={[x86masm]Assembler},
+	backgroundcolor=\color{white},
+	basicstyle=\footnotesize\ttfamily,
+	keywordstyle=\color{blue},
+	stringstyle=\color{red},
+	commentstyle=\color{gray},
+	numbers=left,
+	numberstyle=\tiny,
+	stepnumber=1,
+	numbersep=5pt,
+	frame=single,
+	tabsize=4,
+	captionpos=b,
+	breaklines=true
+}
+
+\lstset{basicstyle=\fontsize{10}{10}\selectfont,breaklines=true,inputencoding=utf8x,extendedchars=\true}
+
+\lstset{
+	literate=
+	{а}{{\selectfont\char224}}1
+	{б}{{\selectfont\char225}}1
+	{в}{{\selectfont\char226}}1
+	{г}{{\selectfont\char227}}1
+	{д}{{\selectfont\char228}}1
+	{е}{{\selectfont\char229}}1
+	{ё}{{\"e}}1
+	{ж}{{\selectfont\char230}}1
+	{з}{{\selectfont\char231}}1
+	{и}{{\selectfont\char232}}1
+	{й}{{\selectfont\char233}}1
+	{к}{{\selectfont\char234}}1
+	{л}{{\selectfont\char235}}1
+	{м}{{\selectfont\char236}}1
+	{н}{{\selectfont\char237}}1
+	{о}{{\selectfont\char238}}1
+	{п}{{\selectfont\char239}}1
+	{р}{{\selectfont\char240}}1
+	{с}{{\selectfont\char241}}1
+	{т}{{\selectfont\char242}}1
+	{у}{{\selectfont\char243}}1
+	{ф}{{\selectfont\char244}}1
+	{х}{{\selectfont\char245}}1
+	{ц}{{\selectfont\char246}}1
+	{ч}{{\selectfont\char247}}1
+	{ш}{{\selectfont\char248}}1
+	{щ}{{\selectfont\char249}}1
+	{ъ}{{\selectfont\char250}}1
+	{ы}{{\selectfont\char251}}1
+	{ь}{{\selectfont\char252}}1
+	{э}{{\selectfont\char253}}1
+	{ю}{{\selectfont\char254}}1
+	{я}{{\selectfont\char255}}1
+	{А}{{\selectfont\char192}}1
+	{Б}{{\selectfont\char193}}1
+	{В}{{\selectfont\char194}}1
+	{Г}{{\selectfont\char195}}1
+	{Д}{{\selectfont\char196}}1
+	{Е}{{\selectfont\char197}}1
+	{Ё}{{\"E}}1
+	{Ж}{{\selectfont\char198}}1
+	{З}{{\selectfont\char199}}1
+	{И}{{\selectfont\char200}}1
+	{Й}{{\selectfont\char201}}1
+	{К}{{\selectfont\char202}}1
+	{Л}{{\selectfont\char203}}1
+	{М}{{\selectfont\char204}}1
+	{Н}{{\selectfont\char205}}1
+	{О}{{\selectfont\char206}}1
+	{П}{{\selectfont\char207}}1
+	{Р}{{\selectfont\char208}}1
+	{С}{{\selectfont\char209}}1
+	{Т}{{\selectfont\char210}}1
+	{У}{{\selectfont\char211}}1
+	{Ф}{{\selectfont\char212}}1
+	{Х}{{\selectfont\char213}}1
+	{Ц}{{\selectfont\char214}}1
+	{Ч}{{\selectfont\char215}}1
+	{Ш}{{\selectfont\char216}}1
+	{Щ}{{\selectfont\char217}}1
+	{Ъ}{{\selectfont\char218}}1
+	{Ы}{{\selectfont\char219}}1
+	{Ь}{{\selectfont\char220}}1
+	{Э}{{\selectfont\char221}}1
+	{Ю}{{\selectfont\char222}}1
+	{Я}{{\selectfont\char223}}1
+}
+
+%opening
+\title{}
+\author{Мансуров Владислав Михайлович}
+
+% геометрия
+\geometry{pdftex, left = 3cm, right = 10mm, top = 2cm, bottom = 2cm}
+
+\setcounter{tocdepth}{4} % фикс переноса 
+\righthyphenmin = 2
+\tolerance = 2048
+
+\begin{document}
+	
+\begin{titlepage}
+	\noindent
+	\begin{tabular}{|c|c|}	
+	\hline
+	\noindent	
+	\begin{minipage}{0.14\textwidth}
+		\includegraphics[width=\linewidth]{img/b_logo}
+	\end{minipage} &
+	\noindent
+	\begin{minipage}{0.75\textwidth}\centering
+		\textbf{\newline Министерство науки и высшего образования Российской Федерации}\\
+		\textbf{Федеральное государственное бюджетное образовательное учреждение высшего образования}\\
+		\textbf{«Московский государственный технический университет имени Н.Э.~Баумана}\\
+		\textbf{(национальный исследовательский университет)»}\\
+		\textbf{(МГТУ им. Н.Э.~Баумана)}
+	\end{minipage} \\
+	\hline	
+	\end{tabular}
+	\newline\newline
+	\noindent ФАКУЛЬТЕТ \underline{«Информатика и системы управления»} \newline\newline
+	\noindent КАФЕДРА \underline{«Программное обеспечение ЭВМ и информационные технологии»}\newline\newline\newline\newline\newline\newline\newline
+	
+	\begin{center}
+		\noindent\begin{minipage}{1.0\textwidth}\centering
+			\Large\textbf{   ~~~ Лабораторная работа №1}\newline
+			\textbf{по дисциплине "Операционные системы"}\newline
+		\end{minipage}
+	\end{center}
+	\noindent\textbf{Тема} $\underline{\text{Дизассемблирование INT 8h}}$\newline\newline
+	\noindent\textbf{Студент} $\underline{\text{Мансуров В. М.}}$\newline\newline
+	\noindent\textbf{Группа} $\underline{\text{ИУ7-56Б}}$\newline\newline
+	\noindent\textbf{Преподаватель} $\underline{\text{Рязанова Н.Ю.}}$\newline
+	
+	\begin{center}
+		\mbox{}
+		\vfill
+		Москва, \the\year ~г.
+	\end{center}
+	\clearpage
+\end{titlepage}
+
+\section{Полученный дизассемблированный код}
+\subsection{Листинг обработчика прерывания INT 8} 
+\begin{lstlisting}[style={asm}]
+	 Temp.lst						 Sourcer Listing v3.07    11-Sep-22   9:18 pm 
+	 Page 1	
+;; Вызов подпрограммы sub_6:	
+020A:0746  E8 0070				call	sub_6	; (07B9)
+
+;; Сохранение значений регистров es, ds, ax, dx:
+020A:0749  06					push	es
+020A:074A  1E					push	ds
+020A:074B  50					push	ax
+020A:v074C  52					push	dx
+
+;; Загрузка сегментных регистров ds, es: 
+;; (40h - сегментная часть адреса области данных BIOS)
+020A:074D  B8 0040				mov	ax,40h
+020A:0750  8E D8				mov	ds,ax
+020A:0752  33 C0				xor	ax,ax			
+020A:0754  8E C0				mov	es,ax
+
+;; Инкремент счётчиков таймера:
+;; 0040:006C, 0040:006E - адреса младшего и старшего слова 
+;; счётчика прерываний таймера BIOSа
+020A:0756  FF 06 006C		    inc	word ptr ds:[6Ch]   	
+;; (0040:006C=4E47h), по этому адресу располагается счетчик реального времен
+020A:075A  75 04				jnz	loc_3			        ; Jump if not zero
+020A:075C  FF 06 006E			inc	word ptr ds:[6Eh]	    ; (0040:006E=15h)
+
+;; Сброс счётчиков времени при наступлении нового дня:
+;; 0040:006E == 18h (24), 0040:006C == B0h (176)
+;; 18h << 16 + B0h == 24 * 60 * 60 * c; 
+;; c = 1573040 / 86400 = 18.2... - количество срабатываний таймера в секунду
+;; Таким образом из того, что условие выполняется, следует, что прошли сутки.
+020A:0760			      loc_3:
+020A:0760  83 3E 006E 18		cmp	word ptr ds:[6Eh],18h	; (0040:006E=15h)
+020A:0765  75 15				jne	loc_4			        ; Jump if not equal
+020A:0767  81 3E 006C 00B0		cmp	word ptr ds:[6Ch],0B0h	; (0040:006C=4E47h)
+020A:076D  75 0D				jne	loc_4			        ; Jump if not equal
+
+;; Обнуление счетчика (старшего слова и младшего слова) таймера
+020A:076F  A3 006E				mov	word ptr ds:[6Eh],ax	; (0040:006E=15h)
+020A:0772  A3 006C				mov	word ptr ds:[6Ch],ax	; (0040:006C=4E47h)
+
+;; Прошло более 24 часов, занесение значения 1 в 0040:0070
+020A:0775  C6 06 0070 01		mov	byte ptr ds:[70h],1	    ; (0040:0070=0)
+;; Установка al = 8:
+020A:077A  0C 08				or	al,8
+
+020A:077C			      loc_4:
+;; Сохранение регистра ax:
+020A:077C  50					push	ax
+;; Декремент счётчика времени до отключения моторчика дисковода:
+;; (0040:0040 - адрес счётчика времени в области данных накопителя FDD)
+020A:077D  FE 0E 0040			dec	byte ptr ds:[40h]		; (0040:0040=96h)
+020A:0781  75 0B				jnz	loc_5					; Jump if not zero
+;; Установка флагов, отвечающих за отключение моторчикка дисковода:
+020A:0783  80 26 003F F0		and	byte ptr ds:[3Fh],0F0h	; (0040:003F=0)
+;; Отправка команды отключения моторчика дисковода:
+020A:0788  B0 0C				mov	al,0Ch
+020A:078A  BA 03F2				mov	dx,3F2h
+020A:078D  EE					out	dx,al					; port 3F2h, dsk0 contrl output
+
+020A:078E				 loc_5:
+;; Восстановление регистра ax:
+020A:078E  58					pop	ax
+;; Проверка второго бита (Parity Flag - флаг чётности):
+;; 0040:0314h - адрес области данных BIOS, содержащей копию флагов
+020A:078F  F7 06 0314 0004		test	word ptr ds:[314h],4	; (0040:0314=3200h)
+020A:0795  75 0C				jnz	loc_6						; Jump if not zero
+;; Сохранение младшего байта регистра FLAGS в AH:
+020A:0797  9F					lahf							; Load ah from flags
+; Обмен значений регистров ah и al: 
+; Теперь младший байт регистра FLAGS находится в младшем байте регистра ax
+020A:0798  86 E0				xchg	ah,al
+;; Сохранение регистра ax:
+020A:079A  50					push	ax
+;; Косвенный вызов пользовательского прерывания по адресу в таблице векторов прерываний:
+;; В этом случае не произойдёт push регистра FLAGS, на его месте будет AX, 
+;; который восстановится в регистр FLAGS после выхода из обработчика прерывания
+020A:079B  26: FF 1E 0070		call	dword ptr es:[70h]		; (0000:0070=6ADh)
+020A:07A0  EB 03				jmp	short loc_7					; (07A5)
+020A:07A2  90					nop
+;; Вызов пользовательского прерывания через int 1Ch:
+020A:07A3				 loc_6:
+020A:07A3  CD 1C				int	1Ch					; Timer break (call each 18.2ms)
+;; Вызов подпрограммы sub_6:
+020A:07A5				 loc_7:
+020A:07A5  E8 0011				call	sub_6			; (07B9)
+;; Сброс контроллера прерываний (отправка команды End Of Interrupt):
+;; Разрешение обработки прерываний с текущим или более низким приоритетом
+020A:07A8  B0 20				mov	al,20h				; ' '
+020A:07AA  E6 20				out	20h,al				; port 20h, 8259-1 int command
+													;  al = 20h, end of interrupt
+;; Восстановление значений регистров es, ds, ax, dx:					
+020A:07AC  5A					pop	dx
+020A:07AD  58					pop	ax
+020A:07AE  1F					pop	ds
+020A:07AF  07					pop	es
+
+020A:07B0  E9 FE99				jmp	$-164h
+020A:07B3  C4					db	0C4h
+020A:07B4  C4 0E 93E9			les	cx,dword ptr ds:[93E9h]	; (0000:93E9=3C0Ch) Load 32 bit ptr
+020A:07B8  FE					db	0FEh
+;; ...
+020A:064C 1E   					push ds
+020A:064D 50					push ax
+;; ...
+020A:0689 58 					pop ax
+020A:068A 1F  					pop ds
+;; Возврат из прерывания
+020A:06AC CF					iret     ; Interrrupt return						
+\end{lstlisting}
+\clearpage
+\subsection{Листинг процедуры sub\_6}
+\begin{lstlisting}[style={asm}]
+;			       SUBROUTINE
+Temp.lst						 Sourcer Listing v3.07    11-Sep-22   9:18 pm   Page 2
+				sub_6		proc	near
+;; Сохранение значений регистров ds, ax:
+020A:07B9  1E					push	ds
+020A:07BA  50					push	ax
+;; Загрузка сегментного регистра ds:
+020A:07BB  B8 0040				mov	ax,40h
+020A:07BE  8E D8				mov	ds,ax
+;; Сохранение младшего байта регистра FLAGS в AH:
+020A:07C0  9F					lahf									; Load ah from flags
+;; Проверка DF и старшего бита IOPL по адресу 0040:0314h:
+020A:07C1  F7 06 0314 2400		test	word ptr ds:[314h],2400h		; (0040:0314=3200h)
+020A:07C7  75 0C				jnz	loc_9								; Jump if not zero
+;; Обнуление 9 бита - сброс IF (запрет прерываний):
+020A:07C9  F0> 81 26 0314 FDFF	lock	and	word ptr ds:[314h],0FDFFh	; (0040:0314=3200h)
+
+020A:07D0			      loc_8:
+;; Сохранение регистра AH в младший байт FLAGS:
+020A:07D0  9E					sahf					; Store ah into flags
+;; Восстановление значений регистров ds, ax:
+020A:07D1  58					pop	ax
+020A:07D2  1F					pop	ds
+
+020A:07D3  EB 03				jmp	short loc_10		; (07D8)
+
+020A:07D5			      loc_9:
+;; Сброс IF ( Iterrupt flag )
+020A:07D5  FA					cli					; Disable interrupts
+020A:07D6  EB F8				jmp	short loc_8		; (07D0)
+
+020A:07D8			     loc_10:
+;; Возврат из подпрограммы:
+020A:07D8  C3					retn
+				sub_6		endp	
+\end{lstlisting}
+\clearpage
+\section{Схема алгоритмов}
+\subsection{Схема алгоритма обработчика INT8h}
+
+\begin{flushright}
+	\includegraphics[height=0.875\textheight]{img/int_8h-1.png}
+	\clearpage
+	\includegraphics[height=0.8\textheight]{img/int_8h-2.png}
+	\includegraphics[height=0.8\textheight]{img/int_8h-3.png}
+	\includegraphics[height=0.95\textheight]{img/int_8h-4.png}
+\end{flushright}
+\subsection{Схема алгоритма процедуры sub\_6}
+
+\begin{center}
+	\includegraphics[height=0.98\textheight]{img/int_8h-sub.png}
+\end{center}
+\end{document}
