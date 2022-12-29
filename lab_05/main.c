@@ -1,136 +1,143 @@
-#include <stdbool.h>
-#include <stdio.h>
-#include <time.h>
 #include <windows.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <process.h>
+#include <stdbool.h>
 
-#define READER_TIME_TO 600
-#define WRITER_TIME_TO 600
-#define DIFF 400
+HANDLE canRead;
+HANDLE canWrite;
+HANDLE binWrite;
 
-#define RNUM 3
-#define WNUM 3
+LONG activeReaders = 0;
+LONG activeWriter = FALSE;
+LONG waitingWriters = 0;
+LONG waitingReaders = 0;
 
-#define RRUNS 7
-#define WRUNS 8
+int number = 0;
 
-HANDLE _can_read;
-HANDLE _can_write;
-HANDLE _mutex;
+void startRead()
+{
+  InterlockedIncrement(&waitingReaders);
+  if (waitingWriters || WaitForSingleObject(canWrite, 0) == WAIT_OBJECT_0)
+    WaitForSingleObject(canRead, INFINITE);
 
-LONG _waiting_readers = 0;
-LONG _active_readers = 0;
-LONG _waiting_writers = 0;
-
-bool _active_writer = false;
-
-int val = 0;
-
-void startRead() {
-  InterlockedIncrement(&_waiting_readers);
-  WaitForSingleObject(_mutex, INFINITE);
-  if (_waiting_writers || WaitForSingleObject(_can_write, 0) == WAIT_OBJECT_0) {
-    WaitForSingleObject(_can_read, INFINITE);
-  }
-
-  SetEvent(_can_read);
-  InterlockedIncrement(&_active_readers);
-  InterlockedDecrement(&_waiting_readers);
-  ReleaseMutex(_mutex);
+  SetEvent(canRead); 
+  InterlockedDecrement(&waitingReaders);
+  InterlockedIncrement(&activeReaders);
+  ReleaseMutex(binWrite);
 }
 
-void stopRead() {
-  InterlockedDecrement(&_active_readers);
-  if (_active_readers == 0) {
-    ResetEvent(_can_read);
-    SetEvent(_can_write);
-  }
+void stopRead()
+{
+  InterlockedDecrement(&activeReaders);
+  if (activeReaders == 0) 
+    SetEvent(canWrite);
 }
 
-DWORD WINAPI readerRoutine(CONST LPVOID lp_params) {
-  int inx = (int)lp_params;
-  int sinterv;
-  srand(time(NULL) + inx);
+void startWrite()
+{
+  InterlockedIncrement(&waitingWriters);
+  if (activeWriter || WaitForSingleObject(canRead, 0) == WAIT_OBJECT_0)
+    WaitForSingleObject(canWrite, INFINITE);
+  WaitForSingleObject(binWrite, INFINITE);
+  InterlockedDecrement(&waitingWriters);
+  InterlockedExchange(&activeWriter, TRUE);
+}
 
-  for (int i = 0; i < RRUNS; i++) {
-    sinterv = READER_TIME_TO + rand() % DIFF;
-    Sleep(sinterv);
+void stopWrite()
+{
+  ReleaseMutex(binWrite);
+  InterlockedExchange(&activeWriter, FALSE);
+  if (waitingReaders)
+    SetEvent(canRead);
+  else
+    SetEvent(canWrite);
+}
+
+void LogExit(const char *msg)
+{
+  perror(msg);
+  ExitProcess(EXIT_SUCCESS);
+}
+
+DWORD Reader(PVOID param)
+{
+  srand(GetCurrentThreadId());
+  for (int i = 0; i < 6; i++)
+  {
+    Sleep(rand() % 200 + 100);
     startRead();
-    printf("reader #%d -> %d (slept for %3d ms)\n", inx, val, sinterv);
+    printf("Reader got value = %d\n", number);
     stopRead();
   }
-  return 0;
+  return EXIT_SUCCESS;
 }
 
-void startWrite() {
-  InterlockedIncrement(&_waiting_writers);
-  if (_active_writer || WaitForSingleObject(_can_read, 0) == WAIT_OBJECT_0) {
-    WaitForSingleObject(_can_write, INFINITE);
-  }
-  InterlockedDecrement(&_waiting_writers);
-  _active_writer = true;
-}
-
-void stopWirite() {
-  _active_writer = false;
-  if (_waiting_readers) {
-    SetEvent(_can_read);
-  } else {
-    SetEvent(_can_write);
-  }
-}
-
-DWORD WINAPI writerRoutine(CONST LPVOID lp_params) {
-  int inx = (int)lp_params;
-  int sinterv;
-  srand(time(NULL) + inx + RNUM);
-
-  for (int i = 0; i < WRUNS; i++) {
-    sinterv = WRITER_TIME_TO + rand() % DIFF;
-    Sleep(sinterv);
+DWORD Writer(PVOID param) 
+{
+  srand(GetCurrentThreadId());
+  for (int i = 0; i < 6; i++)
+  {
+    Sleep(rand() % 400);
     startWrite();
-    val++;
-    printf("writer #%d -> %d (slept for %4d ms)\n", inx, val, sinterv);
-    stopWirite();
+    number++;
+    printf("Writer incremented = %d\n", number);
+    stopWrite();
   }
-  return 0;
+  return EXIT_SUCCESS;
 }
 
-int main() {
+int main(void) 
+{
   setbuf(stdout, NULL);
-  HANDLE r_threads[RNUM];
-  HANDLE w_threads[WNUM];
 
-  if ((_mutex = CreateMutex(NULL, FALSE, NULL)) == NULL) {
-    perror("can't create mutex.");
-    return -1;
+  const int writerAmount = 3;
+  const int readerAmount = 4;
+  DWORD thid[writerAmount + readerAmount];
+  HANDLE pthread[writerAmount + readerAmount];
+
+  if ((canRead = CreateEvent(NULL, FALSE, FALSE, NULL)) == NULL)
+    LogExit("cant createEvent");
+  if ((canWrite = CreateEvent(NULL, TRUE, FALSE, NULL)) == NULL)
+    LogExit("cant createEvent");
+  if ((binWrite = CreateMutex(NULL, 0, NULL)) == NULL)
+    LogExit("cant createMutex");
+
+  for (int i = 0; i < writerAmount; i++)
+  {
+    pthread[i] = CreateThread(NULL, 0, Writer, NULL, 0, &thid[i]);
+    if (pthread[i] == NULL)
+      LogExit("cant createThread");
   }
-  if ((_can_read =
-           CreateEvent(NULL, FALSE, FALSE, NULL) == NULL ||
-           (_can_write = CreateEvent(NULL, FALSE, FALSE, NULL)) == NULL)) {
-    perror("can't create event.");
-    return -1;
+  for (int i = writerAmount; i < writerAmount + readerAmount; i++)
+  {
+    pthread[i] = CreateThread(NULL, 0, Reader, NULL, 0, &thid[i]);
+    if (pthread[i] == NULL)
+      LogExit("cant createThread");
   }
-  for (int i = 0; i < RNUM; i++) {
-    if ((r_threads[i] = CreateThread(NULL, 0, readerRoutine, (LPVOID)i, 0,
-                                     NULL)) == NULL) {
-      perror("can't create reader thread.");
-      return -1;
+
+  for (int i = 0; i < writerAmount + readerAmount; i++) 
+  {
+    DWORD dw = WaitForSingleObject(pthread[i], INFINITE);
+    switch (dw) 
+    {
+      case WAIT_OBJECT_0:
+        printf("thread %d finished\n", thid[i]);
+        break;
+      case WAIT_TIMEOUT:
+        printf("waitThread timeout %d\n", dw);
+        break;
+      case WAIT_FAILED:
+        printf("waitThread failed %d\n", dw);
+        break;
+      default:
+        printf("unknown %d\n", dw);
+        break;
     }
   }
 
-  for (int i = 0; i < WNUM; i++) {
-    if ((w_threads[i] = CreateThread(NULL, 0, writerRoutine, (LPVOID)i, 0,
-                                     NULL)) == NULL) {
-      perror("can't create writer thread.");
-      return -1;
-    }
-  }
-
-  WaitForMultipleObjects(RNUM, r_threads, TRUE, INFINITE);
-  WaitForMultipleObjects(WNUM, w_threads, TRUE, INFINITE);
-  CloseHandle(_mutex);
-  CloseHandle(_can_read);
-  CloseHandle(_can_write);
-
-  return 0;
+  CloseHandle(canRead);
+  CloseHandle(canWrite);
+  CloseHandle(binWrite);
+  return EXIT_SUCCESS;
 }
