@@ -6,7 +6,7 @@
 
 HANDLE canRead;
 HANDLE canWrite;
-HANDLE binWrite;
+HANDLE mutex;
 
 LONG activeReaders = 0;
 LONG activeWriter = FALSE;
@@ -20,11 +20,11 @@ void startRead()
   InterlockedIncrement(&waitingReaders);
   if (waitingWriters || WaitForSingleObject(canWrite, 0) == WAIT_OBJECT_0)
     WaitForSingleObject(canRead, INFINITE);
-
-  SetEvent(canRead); 
+  WaitForSingleObject(mutex, INFINITE);
+  SetEvent(canRead);
   InterlockedDecrement(&waitingReaders);
   InterlockedIncrement(&activeReaders);
-  ReleaseMutex(binWrite);
+  ReleaseMutex(mutex);
 }
 
 void stopRead()
@@ -39,16 +39,17 @@ void startWrite()
   InterlockedIncrement(&waitingWriters);
   if (activeWriter || WaitForSingleObject(canRead, 0) == WAIT_OBJECT_0)
     WaitForSingleObject(canWrite, INFINITE);
-  WaitForSingleObject(binWrite, INFINITE);
+  WaitForSingleObject(mutex, INFINITE);
   InterlockedDecrement(&waitingWriters);
   InterlockedExchange(&activeWriter, TRUE);
+  ReleaseMutex(mutex);
 }
 
 void stopWrite()
 {
-  ReleaseMutex(binWrite);
+  ResetEvent(canWrite);
   InterlockedExchange(&activeWriter, FALSE);
-  if (waitingReaders)
+  if (waitingReaders > 0)
     SetEvent(canRead);
   else
     SetEvent(canWrite);
@@ -78,7 +79,7 @@ DWORD Writer(PVOID param)
   srand(GetCurrentThreadId());
   for (int i = 0; i < 6; i++)
   {
-    Sleep(rand() % 400);
+    Sleep(rand() % 600);
     startWrite();
     number++;
     printf("Writer incremented = %d\n", number);
@@ -100,7 +101,7 @@ int main(void)
     LogExit("cant createEvent");
   if ((canWrite = CreateEvent(NULL, TRUE, FALSE, NULL)) == NULL)
     LogExit("cant createEvent");
-  if ((binWrite = CreateMutex(NULL, 0, NULL)) == NULL)
+  if ((mutex = CreateMutex(NULL, 0, NULL)) == NULL)
     LogExit("cant createMutex");
 
   for (int i = 0; i < writerAmount; i++)
@@ -138,6 +139,6 @@ int main(void)
 
   CloseHandle(canRead);
   CloseHandle(canWrite);
-  CloseHandle(binWrite);
+  CloseHandle(mutex);
   return EXIT_SUCCESS;
 }

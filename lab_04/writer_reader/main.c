@@ -15,17 +15,17 @@
 #define P -1
 #define V  1
 
-struct sembuf start_read_sbuf[] = {
+struct sembuf start_read[] = {
   {READ_QUEUE, V, 0},
   {ACTIVE_WRITER, 0, 0},
   {WRITE_QUEUE, 0, 0},
   {ACTIVE_READERS, V, 0},
   {READ_QUEUE, P, 0},
 };
-struct sembuf stop_read_sbuf[] = {
+struct sembuf stop_read[] = {
   {ACTIVE_READERS, P, 0},
 };
-struct sembuf start_write_sbuf[] = {  
+struct sembuf start_write[] = {  
   {WRITE_QUEUE, V, 0},
   {ACTIVE_READERS, 0, 0},
   {BIN_WRITER, P, 0},
@@ -33,7 +33,7 @@ struct sembuf start_write_sbuf[] = {
   {ACTIVE_WRITER, V, 0},
   {WRITE_QUEUE, P, 0},
 };
-struct sembuf stop_write_sbuf[] = {
+struct sembuf stop_write[] = {
   {ACTIVE_WRITER, P, 0},
   {BIN_WRITER, V, 0},
 };
@@ -41,23 +41,6 @@ struct sembuf stop_write_sbuf[] = {
 int *number;
 int shmid;
 int semid;
-
-int start_read()
-{
-    return semop(semid, start_read_sbuf, 5);
-}
-int stop_read()
-{
-    return semop(semid, stop_read_sbuf, 1);
-}
-int start_write()
-{
-    return semop(semid, start_write_sbuf, 6);
-}
-int stop_write()
-{
-    return semop(semid, stop_write_sbuf, 2);
-}
 
 int init_monitor()
 {
@@ -90,7 +73,7 @@ void writer()
     sleep(rand() % 5);
     int offset = rand() % 26;
 
-    if (start_write() == -1)
+    if (semop(semid, start_write, 6) == -1)
     {
       perror("cant start_write");
       exit(EXIT_FAILURE);
@@ -98,7 +81,7 @@ void writer()
     (*number)++;
     printf("Writer incremented = \'%d\'\n", (*number));
 
-    if (stop_write() == -1)
+    if (semop(semid, stop_write, 2) == -1)
     {
       perror("cant stop_write");
       exit(EXIT_FAILURE);
@@ -116,13 +99,13 @@ void reader()
     sleep(rand() % 2);
     int offset = rand() % 26;
 
-    if (start_read() == -1)
+    if (semop(semid, start_read, 5) == -1)
     {
       perror("cant start_read");
       exit(EXIT_FAILURE);
     }
     printf("Reader got value = \'%d\'\n", (*number));
-    if (stop_read() == -1)
+    if (semop(semid, stop_read, 1) == -1)
     {
       perror("cant stop_read");
       exit(EXIT_FAILURE);
