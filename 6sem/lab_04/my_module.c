@@ -15,7 +15,7 @@ static int __init md_init(void)
     struct task_struct *task = &init_task;
     do
     {
-        printk(KERN_INFO "TASK_INFO: taskp - %llu, task - %s, pid - %d, parent - %s, ppid - %d, state - %d, fl - %d, prio - %d, mnt - %s, policy - %d, root - %s, pwd - %s\n\n", 
+        printk(KERN_INFO "TASK: taskp - %llu, task - %s, pid - %d, parent - %s, ppid - %d, state - %d, flags - %x, prio - %d, root - %s, policy - %d, pwd - %s\n", 
         task,
         task->comm,
         task->pid,
@@ -26,12 +26,11 @@ static int __init md_init(void)
         task->prio,
         task->fs->root.dentry->d_iname,
         task->policy,
-        task->fs->root.dentry->d_name.name, 
         task->fs->pwd.dentry->d_name.name
         );
     } while ((task = next_task(task)) != &init_task);
 
-    printk(KERN_INFO "TASK_INFO: taskp - %llu, task - %s, pid - %d, parent - %s, ppid - %d, state - %d, fl - %d, prio - %d, mnt - %s, policy - %d, root - %s, pwd - %s\n\n",
+    printk(KERN_INFO "CURRENT: taskp - %llu, task - %s, pid - %d, parent - %s, ppid - %d, state - %d, flags - %x, prio - %d, root - %s, policy - %d, pwd - %s\n\n",
         current,
         current->comm,
         current->pid,
@@ -41,8 +40,7 @@ static int __init md_init(void)
         current->flags,
         current->prio,
         current->fs->root.dentry->d_iname,
-        current->policy,
-        current->fs->root.dentry->d_name.name, 
+        current->policy, 
         current->fs->pwd.dentry->d_name.name
     );
 
