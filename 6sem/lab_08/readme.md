@@ -6,6 +6,8 @@
 
 ## Необходимая информация
 
+Процесс монтирование — подготовка раздела диска к использованию файловой состемы, для этого в начале раздела диска выделяется структура суперблок, одним из полей которой является список айнодов, с помощью который можно получить доступ к любому файлу файловой системы.
+
 - Сборка командой - `make`
 - Очистка созданных файлов после сборки - `make clean`
 
@@ -108,6 +110,12 @@ rm image
 rm -rf directory
 ```
 
+**Примечание:** у VFS 4 точки входа:
+- init
+- exit
+- mount
+- kill_sb
+
 Для регистрации собственной файловой системы используется функция:
 ```c
 int register_filesystem(struct file_system_type *);
@@ -144,7 +152,9 @@ struct file_system_type {
 	struct lock_class_key i_mutex_dir_key;
 };
 ```
-Таким образом, для того чтобы зарегестрировать файловую систему необходимо определить поле `name` (имя файловой системы), дополнительно можно определить владельца `owner`. Для монтирования файловой системы достаточно зарегестрировать собственные функции `mount` и `kill_sb`.
+Таким образом, для того чтобы зарегестрировать файловую систему необходимо определить поле `name` (имя файловой системы, которое на символьном уровне), дополнительно можно определить владельца `owner`. Для монтирования файловой системы достаточно зарегестрировать собственные функции `mount` и `kill_sb`.
+
+**Примечание:** Символьный уровень - уровень пользователя для обращения к файлам по имени, представленным симвальным массимом, так как не удобно обращаться по 16-ти значному числу.
 
 Так как до того как зарегестрировать функцию необходимо ее определить и описать:
 - `mount`
@@ -162,140 +172,45 @@ my_vfs_mount(struct file_system_type *type, int flags,
     return root;
 }
 ```
-В которой вызывается функция ядра `mount_nodev` указывающая, что монтирования выполняется без блочных устройств, куда передаем функцию `my_vfs_fill_sb` заполнения структуры [struct super_block ](https://elixir.bootlin.com/linux/latest/source/include/linux/fs.h#L1136): 
+В которой вызывается функция ядра `mount_nodev` указывающая, что монтирования выполняется без блочных устройств, куда передаем функцию `my_vfs_fill_sb` заполнения структуры [struct super_block ](https://elixir.bootlin.com/linux/latest/source/include/linux/fs.h#L1136) (структура, которая описывает подмонтированную файловую систему).
 
+Собственная функция `my_vfs_fill_sb` инициализирует необходимые поля структуры `superblock`, а именно:
 ```c
-struct super_block {
-	struct list_head	s_list;		/* Keep this first */
-	dev_t			    s_dev;		/* search index; _not_ kdev_t */
-	unsigned char		s_blocksize_bits;
-	unsigned long		s_blocksize;
-	loff_t			    s_maxbytes;	/* Max file size */
-	struct file_system_type	*s_type;
-	const struct super_operations	*s_op;
-	const struct dquot_operations	*dq_op;
-	const struct quotactl_ops	*s_qcop;
-	const struct export_operations *s_export_op;
-	unsigned long		s_flags;
-	unsigned long		s_iflags;	/* internal SB_I_* flags */
-	unsigned long		s_magic;
-	struct dentry		*s_root;
-	struct rw_semaphore	s_umount;
-	int			s_count;
-	atomic_t		s_active;
-#ifdef CONFIG_SECURITY
-	void                    *s_security;
-#endif
-	const struct xattr_handler **s_xattr;
-#ifdef CONFIG_FS_ENCRYPTION
-	const struct fscrypt_operations	*s_cop;
-	struct fscrypt_keyring	*s_master_keys; /* master crypto keys in use */
-#endif
-#ifdef CONFIG_FS_VERITY
-	const struct fsverity_operations *s_vop;
-#endif
-#if IS_ENABLED(CONFIG_UNICODE)
-	struct unicode_map *s_encoding;
-	__u16 s_encoding_flags;
-#endif
-	struct hlist_bl_head	s_roots;	/* alternate root dentries for NFS */
-	struct list_head	s_mounts;	/* list of mounts; _not_ for fs use */
-	struct block_device	*s_bdev;
-	struct backing_dev_info *s_bdi;
-	struct mtd_info		*s_mtd;
-	struct hlist_node	s_instances;
-	unsigned int		s_quota_types;	/* Bitmask of supported quota types */
-	struct quota_info	s_dquot;	/* Diskquota specific options */
+static struct super_operations const my_vfs_sup_ops = {
+    .put_super = my_vfs_put_super,
+    .statfs = simple_statfs,
+    .drop_inode = generic_delete_inode
+};
 
-	struct sb_writers	s_writers;
 
-	/*
-	 * Keep s_fs_info, s_time_gran, s_fsnotify_mask, and
-	 * s_fsnotify_marks together for cache efficiency. They are frequently
-	 * accessed and rarely modified.
-	 */
-	void			*s_fs_info;	/* Filesystem private info */
-
-	/* Granularity of c/m/atime in ns (cannot be worse than a second) */
-	u32			s_time_gran;
-	/* Time limits for c/m/atime in seconds */
-	time64_t		   s_time_min;
-	time64_t		   s_time_max;
-#ifdef CONFIG_FSNOTIFY
-	__u32			s_fsnotify_mask;
-	struct fsnotify_mark_connector __rcu	*s_fsnotify_marks;
-#endif
-
-	char			s_id[32];	/* Informational name */
-	uuid_t			s_uuid;		/* UUID */
-
-	unsigned int		s_max_links;
-	fmode_t			s_mode;
-
-	/*
-	 * The next field is for VFS *only*. No filesystems have any business
-	 * even looking at it. You had been warned.
-	 */
-	struct mutex s_vfs_rename_mutex;	/* Kludge */
-
-	/*
-	 * Filesystem subtype.  If non-empty the filesystem type field
-	 * in /proc/mounts will be "type.subtype"
-	 */
-	const char *s_subtype;
-
-	const struct dentry_operations *s_d_op; /* default d_op for dentries */
-
-	struct shrinker s_shrink;	/* per-sb shrinker handle */
-
-	/* Number of inodes with nlink == 0 but still referenced */
-	atomic_long_t s_remove_count;
-
-	/*
-	 * Number of inode/mount/sb objects that are being watched, note that
-	 * inodes objects are currently double-accounted.
-	 */
-	atomic_long_t s_fsnotify_connectors;
-
-	/* Being remounted read-only */
-	int s_readonly_remount;
-
-	/* per-sb errseq_t for reporting writeback errors via syncfs */
-	errseq_t s_wb_err;
-
-	/* AIO completions deferred from interrupt context */
-	struct workqueue_struct *s_dio_done_wq;
-	struct hlist_head s_pins;
-
-	/*
-	 * Owning user namespace and default context in which to
-	 * interpret filesystem uids, gids, quotas, device nodes,
-	 * xattrs and security labels.
-	 */
-	struct user_namespace *s_user_ns;
-
-	/*
-	 * The list_lru structure is essentially just a pointer to a table
-	 * of per-node lru lists, each of which has its own spinlock.
-	 * There is no need to put them into separate cachelines.
-	 */
-	struct list_lru		s_dentry_lru;
-	struct list_lru		s_inode_lru;
-	struct rcu_head		rcu;
-	struct work_struct	destroy_work;
-
-	struct mutex		s_sync_lock;	/* sync serialisation lock */
-
-	/*
-	 * Indicates how deep in a filesystem stack this SB is
-	 */
-	int s_stack_depth;
-
-	/* s_inode_list_lock protects s_inodes */
-	spinlock_t		s_inode_list_lock ____cacheline_aligned_in_smp;
-	struct list_head	s_inodes;	/* all inodes */
-
-	spinlock_t		s_inode_wblist_lock;
-	struct list_head	s_inodes_wb;	/* writeback inodes (список измененныйх inodes) */
-} __randomize_layout;
+static int my_vfs_fill_sb(struct super_block *sb, void *data, int silent) 
+{
+    ...    
+    sb->s_blocksize = PAGE_SIZE; // размер страницы, т.к выделяется память страницами
+    sb->s_blocksize_bits = PAGE_SHIFT;
+    sb->s_magic = MYVFS_MAGIC_NUMBER; // магическое число - адрес файловой системы
+    sb->s_op = &my_vfs_sup_ops; // операции над superblock
+    ...
+    root_inode = my_vfs_make_inode(sb, S_IFDIR | 0755);
+    ...
+    sb->s_root = d_make_root(root_inode);
+}
 ```
+**Примечание:** 
+- simple_statfs - это функция, которая предоставляет статистику файловой системы (например, общий размер диска, количество свобод места, количество файловых блоков и т.д.). Эта функция используется, когда файловая система не поддерживает собственную реализацию метода
+- generic_delete_inode - это функция, используемая для удаления индексного узла (inode) из файловой системы, когда ссылок на этот inode больше нет. Она используется, когда файловая система не имеет своей собственной реализации метода delete_inode.
+
+В `superblock` есть поле `s_root`, структуры [struct dentry](https://elixir.bootlin.com/linux/latest/source/include/linux/dcache.h#L82), которая является корневым каталогом и точкой монтирования при монтировании файловой системы. Для создании вызывается функция ядра `d_make_root`, возвращает корневой каталог, но прежде необходимо создать и проинициализировать `inode`, для это есть собственная функция `my_vfs_make_inode`, в котрой inode создается функцией ядра `new_inode` в качестве парметра ей передается экземпляр (объект) `superblock`, это сделано потому, что необходимо связать созданный inode с конкретной подмантированной файловой системой, точнее заносим inode в поле `s_inodes`, представляеющее список всех `inode`'ов.
+
+**Примечание:** Структура [struct inode](https://elixir.bootlin.com/linux/latest/source/include/linux/fs.h#L595) описывает файл на диске. Это часть файловой системы в задачи, которой входят долговременное хранение и обеспечение доступа - для этого и создаются inode -> для того, чтобы не терять доступ к файлам dentry содержит указатель на суперблок. Rогда обращаемся к файлу, то налету будут создаваться объекты dentry, которые сохранены в долговременной памяти.
+
+### Slab Кеш
+
+Slab-кеш (кеш ядра Linux) - предназначен для повторного использования уже инициализированных объектов (их не придется заново инициализировать), пересень объектов при этом в ядре ограничен. При удалении объекта память не освобождается, а записывается в slab кеш, что приводит к эффективному управлению памяти и ускорения работы с объектами. Побочным эффектом является устранение фрагментации памяти.
+
+Если необходимо вывести инфoрмацию о slab-кеш:
+```bash
+cat /proc/slabinfo
+``` 
+
+Просто кеш хранится в оперативной памяти и предназчен для быстрого доступа к часто запрашиваемой информации. Если информация не запрашивается долгое время, то она выгружается из кеша.
