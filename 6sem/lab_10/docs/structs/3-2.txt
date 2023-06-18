@@ -1,0 +1,57 @@
+$ gcc -Wall -Werror testopen.c -o test_open
+$ ./test_open 
+st_ino: 1526963
+st_size: 1
+st_ino: 1526963
+st_size: 1
+st_ino: 1526963
+st_size: 2
+st_ino: 1526963
+st_size: 2
+st_ino: 1526963
+st_size: 3
+st_ino: 1526963
+st_size: 3
+st_ino: 1526963
+st_size: 4
+st_ino: 1526963
+st_size: 4
+st_ino: 1526963
+st_size: 5
+st_ino: 1526963
+st_size: 5
+st_ino: 1526963
+st_size: 6
+st_ino: 1526963
+st_size: 6
+st_ino: 1526963
+st_size: 7
+st_ino: 1526963
+st_size: 7
+st_ino: 1526963
+st_size: 8
+st_ino: 1526963
+st_size: 8
+st_ino: 1526963
+st_size: 9
+st_ino: 1526963
+st_size: 9
+st_ino: 1526963
+st_size: 10
+st_ino: 1526963
+st_size: 10
+st_ino: 1526963
+st_size: 11
+st_ino: 1526963
+st_size: 11
+st_ino: 1526963
+st_size: 12
+st_ino: 1526963
+st_size: 12
+st_ino: 1526963
+st_size: 13
+st_ino: 1526963
+st_size: 13
+
+$ cat result.txt
+bdfhjlnprtvxz

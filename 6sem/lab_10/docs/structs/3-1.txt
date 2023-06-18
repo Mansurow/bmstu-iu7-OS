@@ -1,0 +1,17 @@
+$ gcc -Wall -Werror test_fopen.c -o test_fopen
+$ ./test_fopen 
+st_ino: 1526963
+st_size: 0
+pos: 0
+st_ino: 1526963
+st_size: 0
+pos: 0
+st_ino: 1526963
+st_size: 0
+pos: 13
+st_ino: 1526963
+st_size: 13
+pos: 13
+
+$ cat result.txt
+bdfhjlnprtvxz
