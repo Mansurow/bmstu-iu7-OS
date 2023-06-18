@@ -3,15 +3,15 @@
 Версия ядра: \texttt{6.3.2}
 
 \captionsetup{singlelinecheck = false, justification=raggedright}
-\lstinputlisting[label=lst:author, caption=Описание структуры FILE, language=c]{structs/typedef FILE.txt}
+\lstinputlisting[label=lst:lst-1, caption=Описание структуры FILE, language=c]{structs/typedef FILE.txt}
 
 \captionsetup{singlelinecheck = false, justification=raggedright}
-\lstinputlisting[label=lst:author, caption=Описание структуры \_IO\_FILE, language=c]{structs/IO FILE.txt}
+\lstinputlisting[label=lst:lst-2, caption=Описание структуры \_IO\_FILE, language=c]{structs/IO FILE.txt}
 
 \section{Первая программа}
 
 \captionsetup{singlelinecheck = false, justification=raggedright}
-\lstinputlisting[label=lst:author, caption=Первая программа, language=c]{../src/testCIO.c}
+\lstinputlisting[label=lst:lst-3, caption=Первая программа, language=c]{../src/testCIO.c}
 
 \begin{figure}[ht]
 	\centering
@@ -20,7 +20,7 @@
 \end{figure}
 
 \captionsetup{singlelinecheck = false, justification=raggedright}
-\lstinputlisting[label=lst:author, caption=Первая программа с 2-мя дополнительными потоками, language=c]{../src/testCIO_thread.c}
+\lstinputlisting[label=lst:lst-4, caption=Первая программа с 2-мя дополнительными потоками, language=c]{../src/testCIO_thread.c}
 
 \begin{figure}[ht]
 	\centering
@@ -67,7 +67,7 @@
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=\textwidth]{../data/img/1}
+	\includegraphics[width=\textwidth]{img/11}
 	\caption{Схема связи структур, используемых в первой программе}
 \end{figure}\newpage
 
@@ -87,8 +87,8 @@
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=\textwidth]{../data/img/2-2}
-	\caption{Результат работы второй программы с дополнительным потоком}
+	\includegraphics[width=\textwidth]{img/2-2}
+	\caption{Результат работы второй программы с 2-мя дополнительными потоками}
 \end{figure}
 
 \subsection{Анализ результата}
@@ -107,26 +107,29 @@
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=\textwidth]{../data/img/2}
+	\includegraphics[width=\textwidth]{img/22}
 	\caption{Схема связи структур, используемых во второй программе}
 \end{figure}\newpage
 
 \section{Третья программа}
 
 \captionsetup{singlelinecheck = false, justification=raggedright}
-\lstinputlisting[label=lst:author, caption=Третья программа с fopen, language=c]{../src/test_fopen.c}
+\lstinputlisting[label=lst:lst-5, caption=Третья программа с fopen, language=c]{../src/test_fopen.c}
 
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=\textwidth]{../data/img/3-1}
-	\caption{Результат работы третьей программы с fopen}
-\end{figure}\newpage
+\clearpage
 
 \captionsetup{singlelinecheck = false, justification=raggedright}
-\lstinputlisting[label=lst:author, caption=Третья программа с open, language=c]{../src/test_open.c}
+\lstinputlisting[label=lst:lst-6, caption=Результат работы третьей программы с open, language=bash]{structs/3-1.txt}
+
+\clearpage
 
 \captionsetup{singlelinecheck = false, justification=raggedright}
-\lstinputlisting[label=lst:author, caption=езультат работы третьей программы с open, language=bash]{structs/3-2.txt}
+\lstinputlisting[label=lst:lst-7, caption=Третья программа с open, language=c]{../src/test_open.c}
+
+\clearpage
+
+\captionsetup{singlelinecheck = false, justification=raggedright}
+\lstinputlisting[label=lst:lst-8, caption=Результат работы третьей программы с open, language=bash]{structs/3-2.txt}
 
 \subsection{Анализ результатов}
 
@@ -154,9 +157,11 @@
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=\textwidth]{../data/img/3}
+	\includegraphics[width=\textwidth]{img/33}
 	\caption{Схема связи структур, используемых в третьей программе с fopen}
 \end{figure}
 
 Проблема решается добавлением флага \texttt{O\_APPEND} в программу с open() или изменением опции <<w>> на опцию <<a>> в программе с fopen().
+
+Таким образом, при буферизованном вводе-выводе все данные и при чтении, и при записи пишутся сначала в буфер, а только после этого в файл. При отсутствии буферизации данные сразу пишутся в/читаются из файла.
 
