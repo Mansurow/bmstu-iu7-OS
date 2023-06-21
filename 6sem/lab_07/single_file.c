@@ -10,9 +10,9 @@ MODULE_AUTHOR("Mansurov Vladislav");
 
 #define BUF_SIZE PAGE_SIZE
 
-#define DIRNAME "fortune_seq_dir"
-#define FILENAME "fortune_seq"
-#define SYMLINK "fortune_seq_ln"
+#define DIRNAME "seqfiles"
+#define FILENAME "seqfile"
+#define SYMLINK "seqfile_link"
 #define FILEPATH DIRNAME "/" FILENAME
 
 static struct proc_dir_entry *dir;
