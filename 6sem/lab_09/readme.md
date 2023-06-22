@@ -31,8 +31,7 @@ Manuals:
     - [do_sys_open](https://elixir.bootlin.com/linux/latest/source/fs/open.c#L1369)
     - [do_sys_openat2](https://elixir.bootlin.com/linux/latest/source/fs/open.c#L1340)
     - [build_open_how](https://elixir.bootlin.com/linux/latest/source/fs/open.c#L1140)
-    - [build_open_flags](https://elixir.bootlin.com/linux/latest/source/fs/open.c#L1156)
-    - 
+    - [build_open_flags](https://elixir.bootlin.com/linux/latest/source/fs/open.c#L1156) 
 2. [fs/namei.c](https://elixir.bootlin.com/linux/latest/source/fs/namei.c)
     - [getname_flags](https://elixir.bootlin.com/linux/latest/source/fs/namei.c#L130)
     - [do_filp_open](https://elixir.bootlin.com/linux/latest/source/fs/namei.c#L3734)
