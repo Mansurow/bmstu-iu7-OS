@@ -13,8 +13,8 @@ void file_info()
 
 int main(void)
 {
-    int fd1 = open("result.txt", O_WRONLY, 0777);
-    int fd2 = open("result.txt", O_WRONLY, 0777);
+    int fd1 = open("result.txt", O_WRONLY, 0624);
+    int fd2 = open("result.txt", O_WRONLY, 0624);
 
     for (char ch = 'a'; ch <= 'z'; ++ch)
     {
