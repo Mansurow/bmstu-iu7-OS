@@ -1,0 +1,147 @@
+%----------------------- Преамбула -----------------------
+\documentclass[ut8x, 14pt, oneside, a4paper]{extarticle}
+
+\usepackage{extsizes} % Для добавления в параметры класса документа 14pt
+\usepackage{multirow}
+
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\floatname{algorithm}{Алгоритм}
+
+% Для работы с несколькими языками и шрифтом Times New Roman по-умолчанию
+\usepackage[english,russian]{babel}
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+
+% ГОСТовские настройки для полей и абзацев
+\usepackage[left=30mm,right=10mm,top=20mm,bottom=20mm]{geometry}
+\usepackage{misccorr}
+\usepackage{indentfirst}
+\usepackage{enumitem}
+\setlength{\parindent}{1.25cm}
+%\setlength{\parskip}{1em} % поменять
+%\linespread{1.3}
+\renewcommand{\baselinestretch}{1.5}
+\setlist{nolistsep} % Отсутствие отступов между элементами \enumerate и \itemize
+
+% Дополнительное окружения для подписей
+\usepackage{array}
+\newenvironment{signstabular}[1][1]{
+	\renewcommand*{\arraystretch}{#1}
+	\tabular
+}{
+	\endtabular
+}
+
+% Переопределение стандартных \section, \subsection, \subsubsection по ГОСТу;
+% Переопределение их отступов до и после для 1.5 интервала во всем документе
+\usepackage{titlesec}
+
+% \filcenter
+%\titleformat{\section}[block]
+%{\bfseries\normalsize}{\thesection}{1em}{}
+\titlespacing{\section}{0mm}{0mm}{8mm}
+
+\titleformat{\subsection}[hang]
+{\bfseries\normalsize}{\thesubsection}{1em}{}
+\titlespacing\subsection{\parindent}{12mm}{12mm}
+
+\titleformat{\subsubsection}[hang]
+{\bfseries\normalsize}{\thesubsubsection}{1em}{}
+\titlespacing\subsubsection{\parindent}{12mm}{12mm}
+
+\titleformat{name=\section}[block]
+{\normalfont\normalsize\bfseries\hspace{\parindent}}
+{\thesection}
+{1em}
+{}
+
+\titleformat{name=\section,numberless}[block]
+{\normalfont\normalsize\bfseries\centering}
+{}
+{0pt}
+{}
+
+\newcommand{\anonsection}[1]{%
+	\section*{\centering#1}%
+	\addcontentsline{toc}{section}{#1}%
+}
+
+\newcommand{\specsection}[1]{
+	\section*{\centering#1}
+	\addcontentsline{toc}{section}{#1}
+}
+
+% Работа с изображениями и таблицами; переопределение названий по ГОСТу
+\usepackage{caption}
+\captionsetup[figure]{name={Рисунок},labelsep=endash, justification=centering}
+\captionsetup[table]{singlelinecheck=false, labelsep=endash}
+
+\usepackage{graphicx}
+\usepackage{diagbox} % Диагональное разделение первой ячейки в таблицах
+
+% Цвета для гиперссылок и листингов
+\usepackage{color}
+\usepackage{xcolor}
+
+% Гиперссылки \toc с кликабельностью
+\usepackage{hyperref}
+
+\hypersetup{
+	linktoc=all,
+	linkcolor=black,
+	colorlinks=true,
+}
+
+% Листинги
+\setsansfont{Arial}
+\setmonofont{Courier New}
+
+\usepackage{color} % Цвета для гиперссылок и листингов
+%\definecolor{comment}{rgb}{0,0.5,0}
+%\definecolor{plain}{rgb}{0.2,0.2,0.2}
+%\definecolor{string}{rgb}{0.91,0.45,0.32}
+%\hypersetup{citecolor=blue}
+\hypersetup{citecolor=black}
+
+\usepackage{listings}
+% Для листинга кода:
+\lstset{ %
+	basicstyle=\small\ttfamily,			% размер и начертание шрифта для подсветки кода
+	numbers=left,						% где поставить нумерацию строк (слева\справа)
+	%numberstyle=,					% размер шрифта для номеров строк
+	stepnumber=1,						% размер шага между двумя номерами строк
+	numbersep=5pt,						% как далеко отстоят номера строк от подсвечиваемого кода
+	frame=single,						% рисовать рамку вокруг кода
+	tabsize=4,							% размер табуляции по умолчанию равен 4 пробелам
+	captionpos=t,						% позиция заголовка вверху [t] или внизу [b]
+	breaklines=true,					
+	breakatwhitespace=true,				% переносить строки только если есть пробел
+	backgroundcolor=\color{white},
+	showstringspaces=false,
+	extendedchars=true,
+	escapeinside=§§
+}
+
+\DeclareCaptionLabelSeparator{line}{\ --\ }
+\captionsetup[lstlisting]{
+	singlelinecheck=false,
+	margin=0pt,
+	labelsep=line
+}
+
+\usepackage{ulem} % Нормальное нижнее подчеркивание
+\usepackage{hhline} % Двойная горизонтальная линия в таблицах
+\usepackage[figure,table]{totalcount} % Подсчет изображений, таблиц
+\usepackage{rotating} % Поворот изображения вместе с названием
+\usepackage{lastpage} % Для подсчета числа страниц
+
+\makeatletter
+\renewcommand\@biblabel[1]{#1.}
+\makeatother
+
+\usepackage{color}
+
+
+\usepackage{amsmath}
+\usepackage{slashbox}
