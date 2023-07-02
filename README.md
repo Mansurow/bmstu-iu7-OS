@@ -107,25 +107,25 @@
       <td align="center">4</td>
       <td><a href="https://github.com/Mansurow/bmstu-iu7-OS/tree/master/6sem/lab_04">Загружаемые модули ядра. Кольцевой список процессов.</a></td>
       <td align="center">:white_check_mark:</td>
-      <td align="center">-</td>
+      <td align="center"><a href="https://github.com/Mansurow/bmstu-iu7-OS/blob/master/6sem/lab_04/Загружаемые_модули_ядра.pdf">mods.pdf</a></td>
     </tr>
     <tr>
       <td align="center">5</td>
       <td><a href="https://github.com/Mansurow/bmstu-iu7-OS/tree/master/6sem/lab_05">Загружаемые модули ядра. История ошибок.</a></td>
       <td align="center">:white_check_mark:</td>
-      <td align="center">-</td>
+      <td align="center"><a href="https://github.com/Mansurow/bmstu-iu7-OS/blob/master/6sem/lab_05/Разработка_модулей_ядра_Linux_Цирюлик.pdf">Цирюлик.pdf</a></td>
     </tr>
     <tr>
       <td align="center">6</td>
       <td><a href="https://github.com/Mansurow/bmstu-iu7-OS/blob/master/6sem/lab_06">Proc_2. Fortunka</a></td>
       <td align="center">:white_check_mark:</td>
-      <td align="center">-</td>
+      <td align="center"><a href="https://github.com/Mansurow/bmstu-iu7-OS/blob/master/6sem/lab_06/proc_2.pdf">proc_2.pdf</a></td>
     </tr>
     <tr>
       <td align="center">7</td>
       <td><a href="https://github.com/Mansurow/bmstu-iu7-OS/blob/master/6sem/lab_07">Proc_2. Seq_files</a></td>
       <td align="center">:white_check_mark:</td>
-      <td align="center">-</td>
+      <td align="center"><a href="https://github.com/Mansurow/bmstu-iu7-OS/blob/master/6sem/lab_07/The%20seq.pdf">seq_files.pdf</a></td>
     </tr>
     <tr>
       <td align="center">8</td>
@@ -137,18 +137,18 @@
       <td align="center">9</td>
       <td><a href="https://github.com/Mansurow/bmstu-iu7-OS/blob/master/6sem/lab_09">Системный вызов open</a></td>
       <td align="center">:white_check_mark:</td>
-      <td align="center">-</td>
+      <td align="center"><a href="https://github.com/Mansurow/bmstu-iu7-OS/tree/master/6sem/lab_09#readme">open.md</a></td>
     </tr>
     <tr>
       <td align="center">10</td>
       <td><a href="https://github.com/Mansurow/bmstu-iu7-OS/blob/master/6sem/lab_10">Открытые файлы</a></td>
-      <td align="center">-</td>
-      <td align="center">-</td>
+      <td align="center">:white_check_mark:</td>
+      <td align="center"><a href="https://github.com/Mansurow/bmstu-iu7-OS/blob/master/6sem/lab_10/Открытые_файлы.pdf">IO.pdf</a></td>
     </tr>
     <tr>
       <td align="center">11</td>
       <td><a href="https://github.com/Mansurow/bmstu-iu7-OS/blob/master/6sem/lab_11">Тасклеты и очереди задач</a></td>
-      <td align="center">-</td>
-      <td align="center">-</td>
+      <td align="center">:white_check_mark:</td>
+      <td align="center"><a href="https://github.com/Mansurow/bmstu-iu7-OS/blob/master/6sem/lab_11/Обработчики%20прерываний.pdf">interrupts.pdf</a></td>
     </tr>      
  <table>  
